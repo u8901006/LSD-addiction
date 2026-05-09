@@ -1,0 +1,15 @@
+{
+  "name": "lsd-addiction-daily-report",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LSD 成癮研究文獻日報 - 每日自動從 PubMed 抓取並由 AI 總結",
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch_papers.mjs",
+    "report": "node scripts/generate_report.mjs",
+    "index": "node scripts/generate_index.mjs"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
