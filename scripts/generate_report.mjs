@@ -3,9 +3,9 @@
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { mkdirSync } from "node:fs";
 
-const API_BASE = process.env.ZHIPU_API_BASE || "https://open.bigmodel.cn/api/coding/paas/v4";
-const MODELS = ["GLM-5-Turbo", "GLM-4.7", "GLM-4.7-Flash"];
-const MAX_TOKENS = 50000;
+const API_BASE = process.env.NVIDIA_API_BASE || "https://integrate.api.nvidia.com/v1";
+const MODELS = ["nvidia/nemotron-3-super-120b-a12b", "nvidia/nemotron-3-nano-30b-a3b"];
+const MAX_TOKENS = 16384;
 const TIMEOUT_MS = 480000;
 const MAX_RETRIES = 3;
 
@@ -143,9 +143,11 @@ ${papersText}
               { role: "system", content: SYSTEM_PROMPT },
               { role: "user", content: prompt },
             ],
-            temperature: 0.3,
-            top_p: 0.9,
-            max_tokens: MAX_TOKENS,
+          temperature: 1.0,
+          top_p: 0.95,
+          max_tokens: MAX_TOKENS,
+          stream: false,
+          chat_template_kwargs: { enable_thinking: false },
           }),
           signal: AbortSignal.timeout(TIMEOUT_MS),
         });
@@ -208,7 +210,7 @@ function generateHtml(analysis) {
   const allPapers = analysis.all_papers || [];
   const keywords = analysis.keywords || [];
   const topicDist = analysis.topic_distribution || {};
-  const modelUsed = analysis._model || "GLM-5-Turbo";
+  const modelUsed = analysis._model || MODELS[0];
 
   const topPicksHtml = topPicks
     .map((pick) => {
@@ -362,7 +364,7 @@ function generateHtml(analysis) {
       <div class="header-meta">
         <span class="badge badge-date">📅 ${dateDisplay}</span>
         <span class="badge badge-count">📊 ${totalCount} 篇文獻</span>
-        <span class="badge badge-source">Powered by PubMed + Zhipu AI</span>
+        <span class="badge badge-source">Powered by PubMed + NVIDIA Nemotron</span>
       </div>
     </div>
   </header>
@@ -411,7 +413,7 @@ function generateHtml(analysis) {
 
 function parseCliArgs() {
   const args = process.argv.slice(2);
-  const opts = { input: "", output: "", apiKey: process.env.ZHIPU_API_KEY || "" };
+const opts = { input: "", output: "", apiKey: process.env.NVIDIA_API_KEY || "" };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--input" && args[i + 1]) opts.input = args[++i];
     else if (args[i] === "--output" && args[i + 1]) opts.output = args[++i];
@@ -424,7 +426,7 @@ async function main() {
   const opts = parseCliArgs();
 
   if (!opts.apiKey) {
-    console.error("[ERROR] No API key. Set ZHIPU_API_KEY env var or use --api-key");
+    console.error("[ERROR] No API key. Set NVIDIA_API_KEY env var or use --api-key");
     process.exit(1);
   }
   if (!opts.input || !opts.output) {

@@ -1,6 +1,6 @@
 # LSD Addiction Research Daily Report
 
-自動從 PubMed 抓取最新 LSD/迷幻藥成癮相關研究文獻，由 Zhipu AI（GLM-5-Turbo）總結、分類，每日生成 HTML 日報並部署至 GitHub Pages。
+自動從 PubMed 抓取最新 LSD/迷幻藥成癮相關研究文獻，由 NVIDIA Nemotron 3 Super 120B 總結、分類，每日生成 HTML 日報並部署至 GitHub Pages。
 
 ## 主題涵蓋
 
@@ -18,7 +18,7 @@
 ## 技術架構
 
 - **資料來源：** PubMed E-utilities API
-- **AI 模型：** GLM-5-Turbo（fallback: GLM-4.7 → GLM-4.7-Flash）
+- **AI 模型：** NVIDIA Nemotron 3 Super 120B（fallback: Nemotron 3 Nano 30B）
 - **執行環境：** GitHub Actions（Node.js 24）
 - **部署：** GitHub Pages
 - **排程：** 每日 GMT+8 06:50
